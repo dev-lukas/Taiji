@@ -43,6 +43,7 @@ public class LongLong {
         // mask to turn the last sever bits to 0
         long m = 0b1111111111111111111111111111111111111111111111111111111110000000L;
         result.LO = ( ( this.LO >>> l) | temp) & m;
+        //result.LO = ( this.LO >>> l) | temp;
         result.HI = this.HI >>> l;
 
         return result;
@@ -57,6 +58,7 @@ public class LongLong {
         long m = 0b1111111111111111111111111111111111111111111111111111111110000000L;
         result.HI =  this.HI << l | temp;
         result.LO = this.LO << l & m;
+        //result.LO = this.LO << l;
 
         return result;
     }

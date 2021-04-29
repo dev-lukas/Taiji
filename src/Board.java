@@ -1,18 +1,43 @@
 import java.util.*;
 
 public class Board {
+    /* for a board
+    "---wbbw/-----b-/-----w-/b------/wb-----/ww-----/bwb----"       ->      - - - w b b w
+                                                                            - - - - - b -
+                                                                            - - - - - w -
+                                                                            b - - - - - -
+                                                                            w b - - - - -
+                                                                            w w - - - - -
+                                                                            b w b - - - -
+    we get have the representation :
+    whites : 0001001000000000000100000000100000011000000100000      ->      0 0 0 1 0 0 1
+                                                                            0 0 0 0 0 0 0
+                                                                            0 0 0 0 0 1 0
+                                                                            0 0 0 0 0 0 0
+                                                                            1 0 0 0 0 0 0
+                                                                            1 1 0 0 0 0 0
+                                                                            0 1 0 0 0 0 0
+
+    blacks : 0000110000001000000001000000010000000000001010000      ->      0 0 0 0 1 1 0
+                                                                            0 0 0 0 0 1 0
+                                                                            0 0 0 0 0 0 0
+                                                                            1 0 0 0 0 0 0
+                                                                            0 1 0 0 0 0 0
+                                                                            0 0 0 0 0 0 0
+                                                                            1 0 1 0 0 0 0
+    We don't use the rest of the 128 bits
+
+    */
     public LongLong whites;
     public LongLong blacks;
-
     private List<Zug> moves;
-    private int n;
+    final int n;
 
     public Board(String strBoard) {
         strBoard = strBoard.replace("/","");
         moves = new ArrayList<>();
         char[] charsBoard = strBoard.toCharArray();
 
-        System.out.println(charsBoard.length);
 
         this.n = (int)Math.sqrt(charsBoard.length);
 
@@ -20,6 +45,7 @@ public class Board {
         blacks = new LongLong(0,0);
 
         // mask for adding tiles
+        // in the end whites and blacks are the same as the input board string but in bits and showing the position of white and black tiles separately
         LongLong a;
         if (n == 11) a = new LongLong(0,0b0000000000000000000000000000000000000000000000000000000010000000L);
         else if (n == 9) a = new LongLong(0,0b0000000000000000100000000000000000000000000000000000000000000000L);
@@ -84,35 +110,43 @@ public class Board {
         this.moves = moves;
     }
 
-//     public void doMove(Zug zug){
-//         white[zug.whiteX][zug.whiteY] = true;
-//         notFree[zug.whiteX][zug.whiteY] = true;
-//         black[zug.blackX][zug.blackY] = true;
-//         notFree[zug.blackX][zug.blackY] = true;
-//     }
-//
-//    public void undoMove(Zug zug){
-//        white[zug.whiteX][zug.whiteY] = false;
-//        notFree[zug.whiteX][zug.whiteY] = false;
-//        black[zug.blackX][zug.blackY] = false;
-//        notFree[zug.blackX][zug.blackY] = false;
-//    }
+    public void doMove(Zug zug){
+        LongLong w = new LongLong(0b1000000000000000000000000000000000000000000000000000000000000000L,0);
+        LongLong b = new LongLong(0b1000000000000000000000000000000000000000000000000000000000000000L,0);
 
-         public String toString(){
-             LongLong m = new LongLong(0b1000000000000000000000000000000000000000000000000000000000000000L,0);
+        w = w.RSHIFT(zug.whiteX * n + zug.whiteY );
+        this.whites = this.whites.OR(w);
+        b = b.RSHIFT(zug.blackX * n + zug.blackY);
+        this.blacks = this.blacks.OR(b);
+    }
 
-             String board = "";
-             for(int i=0; i < n; i++){
-                 for(int k=0; k < n; k++){
-                     if (!whites.AND(m).isZero() ) board += "w ";
-                     else if (!blacks.AND(m).isZero()) board += "b ";
-                     else board += "- ";
-                     m = m.RSHIFT(1);
-                 }
-                 board += "\n";
-             }
-             return board;
-         }
+    public String getRandomMove(){
+        Random rand = new Random();
+        if (moves.size() != 0) {
+            Zug m = moves.get(rand.nextInt(moves.size()));
+            return  (m.whiteX * n + m.whiteY) + "," + (m.blackX * n + m.blackY);
+        } else return null;
+    }
+
+    // Bewertungsfunktion
+    public int h(){
+        return 0;
+    };
+
+    public String toString(){
+        LongLong m = new LongLong(0b1000000000000000000000000000000000000000000000000000000000000000L,0);
+        String board = "";
+        for(int i=0; i < n; i++){
+            for(int k=0; k < n; k++){
+                if (!whites.AND(m).isZero() ) board += "w ";
+                else if (!blacks.AND(m).isZero()) board += "b ";
+                else board += "- ";
+                m = m.RSHIFT(1);
+            }
+            board += "\n";
+        }
+        return board;
+    }
 }
 
 
