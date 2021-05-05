@@ -1,4 +1,8 @@
 import java.util.*;
+import java.util.zip.ZipEntry;
+
+import static java.lang.Math.max;
+import static java.lang.Math.min;
 
 public class Board {
     /* for a board
@@ -30,16 +34,20 @@ public class Board {
     */
     public LongLong whites;
     public LongLong blacks;
-    private List<Zug> moves;
+    final List<Zug> moves;
     final int n;
+    // color of maximizing player
+    final String c;
 
-    public Board(String strBoard) {
+    public Board(String strBoard,String color, String timeLeft) {
         strBoard = strBoard.replace("/","");
         moves = new ArrayList<>();
         char[] charsBoard = strBoard.toCharArray();
 
 
         this.n = (int)Math.sqrt(charsBoard.length);
+
+        this.c = color;
 
         whites = new LongLong(0,0);
         blacks = new LongLong(0,0);
@@ -66,6 +74,24 @@ public class Board {
                 blacks = blacks.LSHIFT(1);
             }
         }
+    }
+
+    public List<Zug> copyMoves(Board board){
+        List<Zug> copy = new ArrayList<>();
+        for(Zug z : board.moves){
+            Zug c = new Zug(z);
+            copy.add(c);
+        }
+        return copy;
+    }
+
+
+    public Board(Board board){
+        this.whites = board.whites;
+        this.blacks = board.blacks;
+        this.n = board.n;
+        this.c = board.c;
+        this.moves = copyMoves(board);
     }
 
     public List<Zug> moveGenerator(){
@@ -106,8 +132,9 @@ public class Board {
     public List<Zug> getMoves() {
         return moves;
     }
-    public void setMOves(List<Zug> moves){
-        this.moves = moves;
+
+    public void removeMove(Zug z){
+        this.moves.remove(new Zug(z));
     }
 
     public void doMove(Zug zug){
@@ -120,6 +147,7 @@ public class Board {
         this.blacks = this.blacks.OR(b);
     }
 
+    // for the first milestone
     public String getRandomMove(){
         Random rand = new Random();
         if (moves.size() != 0) {
@@ -132,6 +160,73 @@ public class Board {
     public int h(){
         return 0;
     };
+
+    public int  minimax(Board node, int depth, boolean maximizingPlayer) {
+        if (depth == 0 || node.getMoves().size() == 0) return node.h();
+
+        if (maximizingPlayer) {
+            int value = Integer.MIN_VALUE;
+            for (Zug z : node.getMoves()){
+                // create child board, apply move z and remove it from the move list
+                Board child = new Board(node);
+                child.doMove(z);
+                child.removeMove(z);
+
+                value = max(value, minimax(child, depth - 1, false));
+            }
+            return value;
+        }
+        else {
+            int value = Integer.MAX_VALUE;
+            for (Zug z : node.getMoves()) {
+                // create child board, apply move z and remove it from the move list
+                Board child = new Board(node);
+                child.doMove(z);
+                child.removeMove(z);
+
+                value = min(value, minimax(child, depth - 1, true));
+            }
+            return value;
+        }
+    }
+
+    public int alphabeta(Board node, int depth, int alpha, int beta, boolean maximizingPlayer){
+        if (depth == 0 || node.getMoves().size() == 0) return node.h();
+
+        if (maximizingPlayer) {
+            int value = Integer.MIN_VALUE;
+            for (Zug z : node.getMoves()){
+                // create child board, apply move z and remove it from the move list
+                Board child = new Board(node);
+                child.doMove(z);
+                child.removeMove(z);
+
+                value = max(value, alphabeta(child, depth - 1, alpha, beta, false));
+
+                // beta cutoff
+                alpha = max(alpha, value);
+                if (alpha >= beta) break;
+            }
+            return value;
+        }
+        else {
+            int value = Integer.MAX_VALUE;
+            for (Zug z : node.getMoves()) {
+                // create child board, apply move z and remove it from the move list
+                Board child = new Board(node);
+                child.doMove(z);
+                child.removeMove(z);
+
+                value = min(value, alphabeta(child, depth - 1, alpha, beta, true));
+
+                // alpha cutoff
+                beta = min(beta, value);
+                if (alpha >= beta) break;
+            }
+            return value;
+        }
+    }
+
 
     public String toString(){
         LongLong m = new LongLong(0b1000000000000000000000000000000000000000000000000000000000000000L,0);

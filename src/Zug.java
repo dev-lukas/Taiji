@@ -11,6 +11,13 @@ public class Zug {
         this.blackY = by;
     }
 
+    public Zug(Zug zug){
+        this.whiteX = zug.whiteX;
+        this.whiteY = zug.whiteY;
+        this.blackX = zug.blackX;
+        this.blackY = zug.blackY;
+    }
+
     public String toString(){
         return "w(" + whiteX + "," + whiteY + ")-b(" + + blackX + "," + blackY + ")";
     }
