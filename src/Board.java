@@ -39,6 +39,8 @@ public class Board {
     // color of maximizing player
     final String c;
 
+    public Zug bestMove;
+
     public Board(String strBoard,String color, String timeLeft) {
         strBoard = strBoard.replace("/","");
         moves = new ArrayList<>();
@@ -156,76 +158,10 @@ public class Board {
         } else return null;
     }
 
-    // Bewertungsfunktion
+    // TODO Bewertungsfunktion
     public int h(){
         return 0;
     };
-
-    public int  minimax(Board node, int depth, boolean maximizingPlayer) {
-        if (depth == 0 || node.getMoves().size() == 0) return node.h();
-
-        if (maximizingPlayer) {
-            int value = Integer.MIN_VALUE;
-            for (Zug z : node.getMoves()){
-                // create child board, apply move z and remove it from the move list
-                Board child = new Board(node);
-                child.doMove(z);
-                child.removeMove(z);
-
-                value = max(value, minimax(child, depth - 1, false));
-            }
-            return value;
-        }
-        else {
-            int value = Integer.MAX_VALUE;
-            for (Zug z : node.getMoves()) {
-                // create child board, apply move z and remove it from the move list
-                Board child = new Board(node);
-                child.doMove(z);
-                child.removeMove(z);
-
-                value = min(value, minimax(child, depth - 1, true));
-            }
-            return value;
-        }
-    }
-
-    public int alphabeta(Board node, int depth, int alpha, int beta, boolean maximizingPlayer){
-        if (depth == 0 || node.getMoves().size() == 0) return node.h();
-
-        if (maximizingPlayer) {
-            int value = Integer.MIN_VALUE;
-            for (Zug z : node.getMoves()){
-                // create child board, apply move z and remove it from the move list
-                Board child = new Board(node);
-                child.doMove(z);
-                child.removeMove(z);
-
-                value = max(value, alphabeta(child, depth - 1, alpha, beta, false));
-
-                // beta cutoff
-                alpha = max(alpha, value);
-                if (alpha >= beta) break;
-            }
-            return value;
-        }
-        else {
-            int value = Integer.MAX_VALUE;
-            for (Zug z : node.getMoves()) {
-                // create child board, apply move z and remove it from the move list
-                Board child = new Board(node);
-                child.doMove(z);
-                child.removeMove(z);
-
-                value = min(value, alphabeta(child, depth - 1, alpha, beta, true));
-
-                // alpha cutoff
-                beta = min(beta, value);
-                if (alpha >= beta) break;
-            }
-            return value;
-        }
-    }
 
 
     public String toString(){
