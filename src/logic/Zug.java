@@ -1,3 +1,5 @@
+package logic;
+
 public class Zug {
     public int whiteX;
     public int whiteY;

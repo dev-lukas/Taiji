@@ -1,3 +1,5 @@
+package logic;
+
 public class LongLong {
     public long HI;
     public long LO;

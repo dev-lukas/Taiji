@@ -1,8 +1,8 @@
-import java.util.*;
-import java.util.zip.ZipEntry;
+package logic;
 
-import static java.lang.Math.max;
-import static java.lang.Math.min;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 public class Board {
     /* for a board

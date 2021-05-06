@@ -2,7 +2,7 @@
 //    private static float testMoveGenerator(String board, int count) {
 //        long sum = 0;
 //        for(int i = 0; i < count; i++) {
-//            Board b = new Board(board);
+//            Logic.Board b = new Logic.Board(board);
 //            long start = System.nanoTime();
 //            b.moveGenerator();
 //            long elapsedTime = System.nanoTime() - start;
@@ -11,7 +11,7 @@
 //        return sum * (float) Math.pow(10,-6);
 //    }
 //
-//    public static void main(String[] args) {
+//    public static void Logic.main(String[] args) {
 //        System.out.println("------------ 7x7 - Empty ------------");
 //        System.out.println(testMoveGenerator("-------/-------/-------/-------/-------/-------/-------", 1) + " ms");
 //        System.out.println(testMoveGenerator("-------/-------/-------/-------/-------/-------/-------", 10) + " ms");

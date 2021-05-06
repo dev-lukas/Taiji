@@ -1,4 +1,7 @@
-import java.util.*;
+package logic;
+
+import java.util.List;
+import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 
 
