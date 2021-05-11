@@ -1,6 +1,7 @@
 package logic;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -158,10 +159,47 @@ public class Board {
         } else return null;
     }
 
+    int count;
     // TODO Bewertungsfunktion
+    void recursiveRating(int i,boolean[] visited, LongLong a) {
+        visited[i] = true;
+        int[] values = {1,n};
+        int[] values2 = {i-1,i-n};
+        int[] values3 = {i+1,i+n};
+        for(int j = 0; j < 2; j++) {
+            if(a.RSHIFT(values[j]).toString().charAt(i) == 49 && !visited[values2[j]] && ((i)%n != 0 || j== 1 )) {
+                count++;
+                recursiveRating(values2[j], visited, a);
+            }
+            if(i<=n*n &&a.LSHIFT(values[j]).toString().charAt(i) == 49 && !visited[values3[j]] && ((i+1)%n != 0 || j== 1 )) {
+                count++;
+                recursiveRating(values3[j], visited, a);
+            }
+        }
+    }
+
+    public int evaluation(LongLong a){
+        boolean[] visited = new boolean[n*n];
+        List<Integer> values = new ArrayList<>();
+        for(int i = 0; i < n*n; i++) {
+            if(a.toString().charAt(i) == 49 && !visited[i]) {
+                count = 1;
+                recursiveRating(i, visited, a);
+                values.add(count);
+            }
+        }
+        values.sort(Collections.reverseOrder());
+        if(values.isEmpty())
+            return 0;
+        if(n==7) return values.get(0);
+        if(n==9) return values.get(0) + values.get(1);
+        return values.get(0) + values.get(1) + values.get(2);
+
+    }
+
     public int h(){
-        return 0;
-    };
+        return evaluation(whites) - evaluation(blacks);
+    }
 
 
     public String toString(){
