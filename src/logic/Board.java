@@ -181,6 +181,9 @@ public class Board {
     public int evaluation(LongLong a){
         boolean[] visited = new boolean[n*n];
         List<Integer> values = new ArrayList<>();
+        values.add(0);
+        values.add(0);
+        values.add(0);
         for(int i = 0; i < n*n; i++) {
             if(a.toString().charAt(i) == 49 && !visited[i]) {
                 count = 1;
@@ -189,8 +192,6 @@ public class Board {
             }
         }
         values.sort(Collections.reverseOrder());
-        if(values.isEmpty())
-            return 0;
         if(n==7) return values.get(0);
         if(n==9) return values.get(0) + values.get(1);
         return values.get(0) + values.get(1) + values.get(2);
