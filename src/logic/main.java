@@ -1,20 +1,38 @@
-package logic;
+import org.json.JSONException;
+import org.json.JSONObject;
 
-import java.util.List;
 import java.util.Scanner;
-import java.util.concurrent.TimeUnit;
 
 
 public class main {
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) throws InterruptedException, JSONException {
+
         while(true) {
+            // get input from stdin and parse it to json object
             Scanner scanner = new Scanner(System.in);
-            String[] parts = scanner.nextLine().split(" ");
-            // parts[0] board, parts[1] player, parts[2] turn, parts[3] time, parts[4] last move
-            Board board = new Board(parts[0],parts[1],parts[3]);
-            List<Zug> moves = board.moveGenerator();
-            TimeUnit.MILLISECONDS.sleep(50);
-            System.out.println(board.getRandomMove());
+            String json = "";
+            //remove {
+            for (int i = 0; i < 9; i++) {
+                json += scanner.nextLine();
+                json += "\n";
+            }
+            JSONObject obj = new JSONObject(json);
+
+
+            int timeLeft = obj.getInt("remainingTime");
+            String currentBoard = obj.getString("currentBoard");
+            String yourColour = obj.getString("yourColour");
+            String gameState = obj.getString("gameState");
+
+            // this constructor loads a board and possible moves directly
+            Board board = new Board(currentBoard, yourColour);
+            // execute alphabeta, the chosen move is in ab.getBestMove()
+            AlphaBeta ab = new AlphaBeta(board, true);
+            // parse it to String
+            String move = board.parseMove(ab.getBestMove());
+            //send move to stdout
+            System.out.println(move);
+
         }
     }
 }

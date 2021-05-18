@@ -1,9 +1,4 @@
-package logic;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class Board {
     /* for a board
@@ -35,14 +30,16 @@ public class Board {
     */
     public LongLong whites;
     public LongLong blacks;
+
+
     final List<Zug> moves;
     final int n;
     // color of maximizing player
     final String c;
 
-    public Zug bestMove;
 
-    public Board(String strBoard,String color, String timeLeft) {
+    // this constructor will be called only once per turn, it calls the moveGenerator
+    public Board(String strBoard,String color) {
         strBoard = strBoard.replace("/","");
         moves = new ArrayList<>();
         char[] charsBoard = strBoard.toCharArray();
@@ -77,24 +74,9 @@ public class Board {
                 blacks = blacks.LSHIFT(1);
             }
         }
-    }
 
-    public List<Zug> copyMoves(Board board){
-        List<Zug> copy = new ArrayList<>();
-        for(Zug z : board.moves){
-            Zug c = new Zug(z);
-            copy.add(c);
-        }
-        return copy;
-    }
+        moveGenerator();
 
-
-    public Board(Board board){
-        this.whites = board.whites;
-        this.blacks = board.blacks;
-        this.n = board.n;
-        this.c = board.c;
-        this.moves = copyMoves(board);
     }
 
     public List<Zug> moveGenerator(){
@@ -132,6 +114,19 @@ public class Board {
         return moves;
     }
 
+
+
+    // this constructor will be called for all iterations of alphabeta with the respective move
+    public Board(Board board,Zug z){
+        this.moves = new ArrayList<>();
+        this.whites = board.whites;
+        this.blacks = board.blacks;
+        this.n = board.n;
+        this.c = board.c;
+        this.doMove(z);
+        moveGenerator();
+    }
+
     public List<Zug> getMoves() {
         return moves;
     }
@@ -160,7 +155,7 @@ public class Board {
     }
 
     int count;
-    // TODO Bewertungsfunktion
+    // Bewertungsfunktion
     void recursiveRating(int i,boolean[] visited, LongLong a) {
         visited[i] = true;
         int[] values = {1,n};
@@ -195,11 +190,19 @@ public class Board {
         if(n==7) return values.get(0);
         if(n==9) return values.get(0) + values.get(1);
         return values.get(0) + values.get(1) + values.get(2);
-
     }
 
     public int h(){
-        return evaluation(whites) - evaluation(blacks);
+       if (c.equals("w")) {
+           return evaluation(whites) - evaluation(blacks);
+       } else {
+           return evaluation(blacks) - evaluation(whites);
+       }
+    }
+
+    // from Zug to String "x,y"
+    public String parseMove(Zug m){
+        return  (m.whiteX * n + m.whiteY) + "," + (m.blackX * n + m.blackY);
     }
 
 

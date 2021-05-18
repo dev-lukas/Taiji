@@ -1,5 +1,3 @@
-package logic;
-
 public class LongLong {
     public long HI;
     public long LO;
@@ -36,22 +34,36 @@ public class LongLong {
         result.LO = ~a.LO;
         return result;
     }
-    // >> for 11x11
+
+
     public LongLong RSHIFT(int l){
         LongLong result = new LongLong(0,0);
-        long temp;
-        temp = this.HI;
-        temp = temp << (64 - l);
-        // mask to turn the last sever bits to 0
-        long m = 0b1111111111111111111111111111111111111111111111111111111110000000L;
-        result.LO = ( ( this.LO >>> l) | temp) & m;
-        //result.LO = ( this.LO >>> l) | temp;
-        result.HI = this.HI >>> l;
-
+        if (l == 0) return this;
+        else if (l >= 128) return new LongLong(0,0);
+        else if (l < 64 ){
+            // [1,63]
+            long temp;
+            temp = this.HI;
+            temp = temp << (64 - l);
+            result.LO = ( this.LO >>> l) | temp;
+            result.HI = this.HI >>> l;
+        } else {
+            // [64,127]
+            long temp;
+            temp = this.HI;
+            // HI becomes zero when shifted more than or equal to 64
+            // original LO disappears and original HI >>> (l-64) comes to its place
+            result.HI = 0;
+            result.LO = temp >>> (l-64);
+        }
         return result;
     }
+
+    // should be corrected like RSCHIFT with intervals
+
     // << for 11X11
     public LongLong LSHIFT(int l){
+        if (l == 0) return this;
         LongLong result = new LongLong(0,0);
         long temp;
         temp = this.LO;
@@ -61,6 +73,7 @@ public class LongLong {
         result.HI =  this.HI << l | temp;
         result.LO = this.LO << l & m;
         //result.LO = this.LO << l;
+
 
         return result;
     }
