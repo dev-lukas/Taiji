@@ -35,27 +35,27 @@ public class Benchmark {
         return "Alphabeta took " + (elapsedTime * (float) Math.pow(10,-6)) + " ms, looked at " + ab.getStateCount() + " states with the best move being: " + ab.getBestMove();
     }
 
-    public static void benchmark(String board) {
+    public static void benchmark(String board, int minimaxdepth, int alphabetadepth) {
         System.out.println("---------------------------------------------------");
         System.out.println("Benchmarking: " + board);
         System.out.println("Running Rating Benchmark...");
         System.out.println(benchmarkRating(board, 1000));
         System.out.println("Running Minimax Benchmark...");
-        for(int i = 1; i < 3; i++) {
+        for(int i = 1; i < minimaxdepth+1; i++) {
             System.out.println(benchmarkMiniMax(board, i));
         }
         System.out.println("Running AlphaBeta Benchmark...");
-        for(int i = 1; i < 3; i++) {
+        for(int i = 1; i < alphabetadepth+1; i++) {
             System.out.println(benchmarkAlphaBeta(board, i));
         }
     }
 
    public static void main(String[] args) {
-        benchmark("-------/-------/-------/-------/-------/-------/-------");
-        benchmark("---------/---------/---------/---------/---------/---------/---------/---------/---------");
-        benchmark("-----------/-----------/-----------/-----------/-----------/-----------/-----------/-----------/-----------/-----------/-----------");
-        benchmark("wbw----/bbw----/-wwb---/-b-bb--/-wbww--/-------/-------");
-        benchmark("bbb----/www----/bb-----/-bw----/-bw----/--wb---/-bw----");
-        benchmark("---------/---------/---------/--bw-wb--/--bwwwb--/----b--wb/---wwwwwb/---bbbbw-/-------b-");
+        benchmark("-------/-------/-------/-------/-------/-------/-------",2,4);
+        benchmark("---------/---------/---------/---------/---------/---------/---------/---------/---------",2,4);
+        benchmark("-----------/-----------/-----------/-----------/-----------/-----------/-----------/-----------/-----------/-----------/-----------",2,4);
+        benchmark("wbw----/bbw----/-wwb---/-b-bb--/-wbww--/-------/-------",3,4);
+        benchmark("bbb----/www----/bb-----/-bw----/-bw----/--wb---/-bw----",3,4);
+        benchmark("---------/---------/---------/--bw-wb--/--bwwwb--/----b--wb/---wwwwwb/---bbbbw-/-------b-",3,4);
     }
 }
