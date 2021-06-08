@@ -1,19 +1,24 @@
 import java.util.*;
 
 public class Transposition {
-    Hashtable<BoardHash, Zug> ttable;
+    public static Hashtable<BoardHash, Integer> ttable;
 
     public Transposition() {
         ttable = new Hashtable<>();
     }
 
-    public Zug checkForMove(Board node) {
+    public boolean containsKey(Board node) {
+        BoardHash b = new BoardHash(node.whites, node.blacks);
+        return ttable.containsKey(b);
+    }
+
+    public int getScore(Board node) {
         BoardHash b = new BoardHash(node.whites, node.blacks);
         return ttable.get(b);
     }
 
-    public void insertMove(Board node, Zug bestMove) {
+    public void insertScore(Board node, int score) {
         BoardHash b = new BoardHash(node.whites, node.blacks);
-        ttable.put(b, bestMove);
+        ttable.put(b, score);
     }
 }
