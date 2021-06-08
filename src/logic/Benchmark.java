@@ -35,6 +35,16 @@ public class Benchmark {
         return "Alphabeta took " + (elapsedTime * (float) Math.pow(10,-6)) + " ms, looked at " + ab.getStateCount() + " states with the best move being: " + ab.getBestMove();
     }
 
+    private static String benchmarkPV(String board, int depth) {
+        Board b = new Board(board, "w");
+        AlphaBeta ab = new AlphaBeta(b, true);
+        long start = System.nanoTime();
+        ab.setStateCount(0);
+        ab.pvSearch(b, depth, Integer.MIN_VALUE, Integer.MAX_VALUE, 1,true);
+        long elapsedTime = System.nanoTime() - start;
+        return "PV Search took " + (elapsedTime * (float) Math.pow(10,-6)) + " ms, looked at " + ab.getStateCount() + " states with the best move being: " + ab.getBestMove();
+    }
+
     public static void benchmark(String board, int minimaxdepth, int alphabetadepth) {
         System.out.println("---------------------------------------------------");
         System.out.println("Benchmarking: " + board);
@@ -51,11 +61,17 @@ public class Benchmark {
     }
 
    public static void main(String[] args) {
-        benchmark("-------/-------/-------/-------/-------/-------/-------",2,4);
-        benchmark("---------/---------/---------/---------/---------/---------/---------/---------/---------",2,4);
-        benchmark("-----------/-----------/-----------/-----------/-----------/-----------/-----------/-----------/-----------/-----------/-----------",2,4);
-        benchmark("wbw----/bbw----/-wwb---/-b-bb--/-wbww--/-------/-------",3,4);
-        benchmark("bbb----/www----/bb-----/-bw----/-bw----/--wb---/-bw----",3,4);
-        benchmark("---------/---------/---------/--bw-wb--/--bwwwb--/----b--wb/---wwwwwb/---bbbbw-/-------b-",2,4);
+       System.out.println(benchmarkAlphaBeta("wbw----/bbw----/-wwb---/-b-bb--/-wbww--/-------/-------",2));
+       System.out.println(benchmarkPV("wbw----/bbw----/-wwb---/-b-bb--/-wbww--/-------/-------",2));
+       System.out.println(benchmarkAlphaBeta("bbb----/www----/bb-----/-bw----/-bw----/--wb---/-bw----",2));
+       System.out.println(benchmarkPV("bbb----/www----/bb-----/-bw----/-bw----/--wb---/-bw----",2));
+       System.out.println(benchmarkAlphaBeta("wb-b-wbwbwb/---w-w--w-w/--bb-b--b-b/--ww---wb-w/b--wbw----b/w-b--bwb---/--ww-----w-/-wbb-bw--b-/-w-----w-bw/-b-w-w-b---/---b-b---wb",2));
+       System.out.println(benchmarkPV("wb-b-wbwbwb/---w-w--w-w/--bb-b--b-b/--ww---wb-w/b--wbw----b/w-b--bwb---/--ww-----w-/-wbb-bw--b-/-w-----w-bw/-b-w-w-b---/---b-b---wb",2));
+        //benchmark("---------/---------/---------/---------/---------/---------/---------/---------/---------",2,3);
+        //benchmark("-----------/-----------/-----------/-----------/-----------/-----------/-----------/-----------/-----------/-----------/-----------",2,3);
+        //benchmark("wbw----/bbw----/-wwb---/-b-bb--/-wbww--/-------/-------",3,4);
+        //benchmark("bbb----/www----/bb-----/-bw----/-bw----/--wb---/-bw----",2,4);
+        //benchmark("---------/---------/---------/--bw-wb--/--bwwwb--/----b--wb/---wwwwwb/---bbbbw-/-------b-",2,3);
+        //benchmark("wb-b-wbwbwb/---w-w--w-w/--bb-b--b-b/--ww---wb-w/b--wbw----b/w-b--bwb---/--ww-----w-/-wbb-bw--b-/-w-----w-bw/-b-w-w-b---/---b-b---wb",2,4);
     }
 }

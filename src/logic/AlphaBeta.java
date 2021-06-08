@@ -16,8 +16,8 @@ public class AlphaBeta {
         // 4 seconds in nanoseconds
         
         long window = 100000000L;
-        
 
+        /* TODO: If pvSearch works redo
         if (cutoffs) {
             for (int distance = 1; distance < Integer.MAX_VALUE && end - start <= window; distance++) {
                 alphabeta(board, distance, Integer.MIN_VALUE, Integer.MAX_VALUE, true,true);
@@ -28,9 +28,34 @@ public class AlphaBeta {
                 minimax(board, distance, true,true);
                 end = System.nanoTime();
             }
-        }
+        }*/
     }
 
+    public void transpositionHandler() {
+
+    }
+
+    public int pvSearch(Board node,int depth, int alpha, int beta, int color, boolean isRoot) {
+        if (depth == 0 || node.getMoves().size() == 0) return node.h() * color;
+        int score;
+        for (Zug z : node.getMoves()) {
+            if (bestMove == null) bestMove = new Zug(z);
+            Board child = new Board(node, z);
+            StateCount++;
+            if (z == node.getMoves().get(0)) {
+                score = -pvSearch(child, depth - 1, -beta, -alpha, -color, false);
+            } else {
+                score = -pvSearch(child, depth - 1, -alpha - 1, -alpha, -color, false);
+                if (alpha < score && score < beta) {
+                    score = -pvSearch(child, depth - 1, -beta, -score, -color, false);
+                }
+            }
+            if(alpha < score && isRoot) bestMove = new Zug(z);
+            alpha = max(alpha, score);
+            if( alpha >= beta ) break;
+        }
+        return alpha;
+    }
 
     public int minimax(Board node, int depth, boolean maximizingPlayer, boolean isRoot) {
         if (depth == 0 || node.getMoves().size() == 0) return node.h();
