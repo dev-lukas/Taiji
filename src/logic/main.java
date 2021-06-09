@@ -6,7 +6,8 @@ import java.util.Scanner;
 
 public class main {
     public static void main(String[] args) throws InterruptedException, JSONException {
-
+        //Initialize our transposition table that will be used through the game
+        Transposition ttable = new Transposition();
         while(true) {
             // get input from stdin and parse it to json object
             Scanner scanner = new Scanner(System.in);
@@ -26,10 +27,10 @@ public class main {
 
             // this constructor loads a board and possible moves directly
             Board board = new Board(currentBoard, yourColour);
-            // execute alphabeta, the chosen move is in ab.getBestMove()
-            AlphaBeta ab = new AlphaBeta(board, true);
+            // execute pvSearch, the chosen move is in ab.getBestMove()
+            PVSearch pv = new PVSearch(board, ttable);
             // parse it to String
-            String move = board.parseMove(ab.getBestMove());
+            String move = board.parseMove(pv.getBestMove());
             //send move to stdout
             System.out.println(move);
 
