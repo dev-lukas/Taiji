@@ -7,23 +7,34 @@ public class Transposition {
         ttable = new Hashtable<>();
     }
 
-    public boolean containsKey(Board node) {
-        BoardHash b = new BoardHash(node.whites, node.blacks);
-        return ttable.containsKey(b.hashCode());
+    public boolean containsKey(Board node, int depth) {
+        return ttable.containsKey(uniqueHashCode(node, depth));
     }
 
-    public TableData getScore(Board node) {
-        BoardHash b = new BoardHash(node.whites, node.blacks);
-        return ttable.get(b.hashCode());
+    public void deleteScore(Board node, int score, int depth)  {
+        ttable.remove(uniqueHashCode(node, depth));
+    }
+
+    public TableData getTableData(Board node, int depth) {
+        return ttable.get(uniqueHashCode(node, depth));
     }
 
     public void insertScore(Board node, int score, int depth) {
-        BoardHash b = new BoardHash(node.whites, node.blacks);
         TableData d = new TableData(score, depth);
-        ttable.put(b.hashCode(), d);
+        ttable.put(uniqueHashCode(node, depth), d);
     }
 
     public int getSize() {
         return ttable.size();
+    }
+
+
+    public int uniqueHashCode(Board node, int depth) {
+        int result = 256;
+        int c1 = (int)(node.whites.HI ^ (node.whites.HI >>> 32));
+        int c2 = (int)(node.whites.LO ^ (node.whites.LO >>> 32));
+        int c3 = (int)(node.blacks.HI ^ (node.blacks.HI >>> 32));
+        int c4 = (int)(node.blacks.LO ^ (node.blacks.LO >>> 32));
+        return 37 * result + c1 + c2 + c3 + c4 + depth;
     }
 }
