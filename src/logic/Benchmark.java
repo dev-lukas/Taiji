@@ -64,7 +64,7 @@ public class Benchmark {
         for(int i = 1; i < depth+1; i++) {
             System.out.println(benchmarkPV(board, i, ttable));
         }
-        System.out.println("Running PV Table Search 1 Benchmark...");
+        System.out.println("Running PV Table Search Benchmark...");
         for(int i = 1; i < depth+1; i++) {
             System.out.println(benchmarkPVTable(board, i, ttable));
         }
@@ -77,8 +77,8 @@ public class Benchmark {
 
    public static void main(String[] args) {
        Transposition tb = new Transposition();
-       //benchmark("---------/---------/---------/---------/---------/---------/---------/---------/---------",2, tb);
-       //benchmark("-----------/-----------/-----------/-----------/-----------/-----------/-----------/-----------/-----------/-----------/-----------",2, tb);
+       benchmark("---------/---------/---------/---------/---------/---------/---------/---------/---------",2, tb);
+       benchmark("-----------/-----------/-----------/-----------/-----------/-----------/-----------/-----------/-----------/-----------/-----------",2, tb);
        benchmark("wbw----/bbw----/-wwb---/-b-bb--/-wbww--/-------/-------",4,tb);
        benchmark("wbw----/bbw----/-wwb---/-b-bb--/-wbww--/-------/-------",4,tb);
        benchmark("bbb----/www----/bb-----/-bw----/-bw----/--wb---/-bw----",4,tb);

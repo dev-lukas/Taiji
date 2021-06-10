@@ -6,7 +6,7 @@ public class PVSearch {
     private int StateCount = 0;
     public Transposition ttable;
 
-    public PVSearch(Board board, Transposition table, boolean experimentalMode) {
+    public PVSearch(Board board, Transposition table, boolean useTTables) {
         //Set transposition table that is to be used
         ttable = table;
         //Time management
@@ -14,8 +14,7 @@ public class PVSearch {
         long start = System.nanoTime();
         long end = System.nanoTime();
 
-
-        if(experimentalMode) {
+        if(useTTables) {
             for (int distance = 1; distance < Integer.MAX_VALUE && end - start <= window; distance++) {
                 pvSearchTable(board, distance, Integer.MIN_VALUE, Integer.MAX_VALUE, true);
                 end = System.nanoTime();
@@ -25,6 +24,7 @@ public class PVSearch {
                 pvSearch(board, distance, Integer.MIN_VALUE, Integer.MAX_VALUE, true);
                 end = System.nanoTime();
             }
+
         }
     }
 
@@ -35,20 +35,18 @@ public class PVSearch {
             if (bestMove == null) bestMove = new Zug(z);
             Board child = new Board(node, z);
             StateCount++;
-            if(!ttable.containsKey(child, depth - 1))  {
-                if (z == node.getMoves().get(0)) {
+            if(!ttable.containsKey(child) || ttable.getTableData(child).getDepth() < depth - 1)  {
+                if(z == node.getMoves().get(0)) {
                     score = pvSearchTable(child, depth - 1, -beta, -alpha, false);
-                    ttable.insertScore(child, score, depth - 1);
                 } else {
                     score = pvSearchTable(child, depth - 1, -alpha - 1, -alpha, false);
                     if (alpha < score && score < beta) {
                         score = pvSearchTable(child, depth - 1, -beta, -score, false);
                     }
-                    ttable.insertScore(child, score, depth - 1);
                 }
+                ttable.insertData(child, score, depth - 1);
             } else  {
-                TableData d = ttable.getTableData(child, depth - 1);
-                score = d.getScore();
+                score = ttable.getTableData(child).getScore();
             }
             if(alpha < score && isRoot) bestMove = new Zug(z);
             alpha = max(alpha, score);

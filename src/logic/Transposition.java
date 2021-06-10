@@ -1,27 +1,31 @@
 import java.util.*;
 
 public class Transposition {
-    public static Hashtable<Integer, TableData> ttable;
+    public static Hashtable<Long, TableData> ttable;
+    long RWHI;
+    long RWLO;
+    long RBHI;
+    long RBLO;
 
     public Transposition() {
+        RWHI = new Random().nextLong();
+        RWLO = new Random().nextLong();
+        RBHI = new Random().nextLong();
+        RBLO = new Random().nextLong();
         ttable = new Hashtable<>();
     }
 
-    public boolean containsKey(Board node, int depth) {
-        return ttable.containsKey(uniqueHashCode(node, depth));
+    public boolean containsKey(Board node) {
+        return ttable.containsKey(uniqueHashCode(node));
     }
 
-    public void deleteScore(Board node, int score, int depth)  {
-        ttable.remove(uniqueHashCode(node, depth));
+    public TableData getTableData(Board node) {
+        return ttable.get(uniqueHashCode(node));
     }
 
-    public TableData getTableData(Board node, int depth) {
-        return ttable.get(uniqueHashCode(node, depth));
-    }
-
-    public void insertScore(Board node, int score, int depth) {
+    public void insertData(Board node, int score, int depth) {
         TableData d = new TableData(score, depth);
-        ttable.put(uniqueHashCode(node, depth), d);
+        ttable.put(uniqueHashCode(node), d);
     }
 
     public int getSize() {
@@ -29,12 +33,16 @@ public class Transposition {
     }
 
 
-    public int uniqueHashCode(Board node, int depth) {
-        int result = 256;
-        int c1 = (int)(node.whites.HI ^ (node.whites.HI >>> 32));
-        int c2 = (int)(node.whites.LO ^ (node.whites.LO >>> 32));
-        int c3 = (int)(node.blacks.HI ^ (node.blacks.HI >>> 32));
-        int c4 = (int)(node.blacks.LO ^ (node.blacks.LO >>> 32));
-        return 37 * result + c1 + c2 + c3 + c4 + depth;
+    public long uniqueHashCode(Board node) {
+        long hash = 17;
+        long l1 = (node.whites.HI ^ RWHI);
+        long l2 = (node.whites.LO ^ RWLO);
+        long l3 = (node.blacks.HI ^ RBHI);
+        long l4 = (node.blacks.LO ^ RBLO);
+        hash = hash * 31 + l1;
+        hash = hash * 31 + l2;
+        hash = hash * 31 + l3;
+        hash = hash * 31 + l4;
+        return hash;
     }
 }
