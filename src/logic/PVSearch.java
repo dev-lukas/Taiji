@@ -15,18 +15,22 @@ public class PVSearch {
         long end = System.nanoTime();
 
         for (int distance = 1; distance < Integer.MAX_VALUE && end - start <= window; distance++) {
-            transpositionHandler(board, distance, Integer.MIN_VALUE, Integer.MAX_VALUE,true);
+            pvSearchTable(board, distance, Integer.MIN_VALUE, Integer.MAX_VALUE,true, ttable);
             end = System.nanoTime();
         }
     }
 
-    public int transpositionHandler(Board board, int distance, int alpha, int beta, boolean isRoot) {
+    public int transpositionHandler(Board board, int depth, int alpha, int beta, boolean isRoot) {
         if(!ttable.containsKey(board)) {
-            int score = pvSearchTable(board, distance, alpha, beta, isRoot, ttable);
-            ttable.insertScore(board, score);
+            int score = pvSearchTable(board, depth, alpha, beta, isRoot, ttable);
+            ttable.insertScore(board, score, depth);
             return score;
         } else {
-            return ttable.getScore(board);
+            TableData d = ttable.getScore(board);
+            if(d.getDepth() == depth) return d.getScore();
+            int score = pvSearchTable(board, depth, alpha, beta, isRoot, ttable);
+            ttable.insertScore(board, score, depth);
+            return score;
         }
     }
 

@@ -1,7 +1,7 @@
 import java.util.*;
 
 public class Transposition {
-    public static Hashtable<BoardHash, Integer> ttable;
+    public static Hashtable<Integer, TableData> ttable;
 
     public Transposition() {
         ttable = new Hashtable<>();
@@ -9,16 +9,21 @@ public class Transposition {
 
     public boolean containsKey(Board node) {
         BoardHash b = new BoardHash(node.whites, node.blacks);
-        return ttable.containsKey(b);
+        return ttable.containsKey(b.hashCode());
     }
 
-    public int getScore(Board node) {
+    public TableData getScore(Board node) {
         BoardHash b = new BoardHash(node.whites, node.blacks);
-        return ttable.get(b);
+        return ttable.get(b.hashCode());
     }
 
-    public void insertScore(Board node, int score) {
+    public void insertScore(Board node, int score, int depth) {
         BoardHash b = new BoardHash(node.whites, node.blacks);
-        ttable.put(b, score);
+        TableData d = new TableData(score, depth);
+        ttable.put(b.hashCode(), d);
+    }
+
+    public int getSize() {
+        return ttable.size();
     }
 }
