@@ -1,3 +1,7 @@
+/*
+    TableData
+    Used to store information in our Transposition Table
+ */
 public class TableData {
     public int score;
     public int depth;

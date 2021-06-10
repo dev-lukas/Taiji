@@ -1,19 +1,24 @@
 import static java.lang.Math.max;
 import static java.lang.Math.min;
-
+/*
+    PVSearch
+    Implementation of Principal Variation Sort with or without Transposition Tables
+ */
 public class PVSearch {
     private Zug bestMove;
     private int StateCount = 0;
     public Transposition ttable;
+    public long start;
+    public long window;
 
     public PVSearch(Board board, Transposition table, boolean useTTables) {
         //Set transposition table that is to be used
         ttable = table;
-        //Time management
-        long window = 100000000L;
-        long start = System.nanoTime();
+        //Time management  now global
+        window = 1000000000L;
+        start = System.nanoTime();
         long end = System.nanoTime();
-
+        //Use either vanilla pvSearch or with transposition tables (basically only for benchmarks)
         if(useTTables) {
             for (int distance = 1; distance < Integer.MAX_VALUE && end - start <= window; distance++) {
                 pvSearchTable(board, distance, Integer.MIN_VALUE, Integer.MAX_VALUE, true);
@@ -24,17 +29,20 @@ public class PVSearch {
                 pvSearch(board, distance, Integer.MIN_VALUE, Integer.MAX_VALUE, true);
                 end = System.nanoTime();
             }
-
         }
     }
 
     public int pvSearchTable(Board node,int depth, int alpha, int beta, boolean isRoot) {
+        //anchor
         if (depth == 0 || node.getMoves().size() == 0) return node.h();
         int score;
         for (Zug z : node.getMoves()) {
+            //time management -  break if we are over the window
+            if (System.nanoTime() - start > window) break;
             if (bestMove == null) bestMove = new Zug(z);
             Board child = new Board(node, z);
             StateCount++;
+            //Check our table if we have an key for the board already. Also check if the depth of entry is appropriate
             if(!ttable.containsKey(child) || ttable.getTableData(child).getDepth() < depth - 1)  {
                 if(z == node.getMoves().get(0)) {
                     score = pvSearchTable(child, depth - 1, -beta, -alpha, false);
@@ -44,8 +52,10 @@ public class PVSearch {
                         score = pvSearchTable(child, depth - 1, -beta, -score, false);
                     }
                 }
+                //Add entry to database
                 ttable.insertData(child, score, depth - 1);
             } else  {
+                //We have an appropriate entry -> just use it
                 score = ttable.getTableData(child).getScore();
             }
             if(alpha < score && isRoot) bestMove = new Zug(z);
@@ -59,6 +69,7 @@ public class PVSearch {
         if (depth == 0 || node.getMoves().size() == 0) return node.h();
         int score;
         for (Zug z : node.getMoves()) {
+            if (System.nanoTime() - start > window) break;
             if (bestMove == null) bestMove = new Zug(z);
             Board child = new Board(node, z);
             StateCount++;

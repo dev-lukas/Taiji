@@ -1,5 +1,9 @@
 import java.util.*;
-
+/*
+    Transposition
+    Our Transposition Table Class
+    Using a custom boardkey hash as key and tabledata to store our values
+ */
 public class Transposition {
     public static Hashtable<Long, TableData> ttable;
     long RWHI;
@@ -32,7 +36,9 @@ public class Transposition {
         return ttable.size();
     }
 
-
+    /*
+        Hashfunction for unique hashes for our board...seems to work? kinda
+     */
     public long uniqueHashCode(Board node) {
         long hash = 17;
         long l1 = (node.whites.HI ^ RWHI);
