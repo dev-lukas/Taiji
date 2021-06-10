@@ -10,21 +10,23 @@ public class PVSearch {
     public Transposition ttable;
     public long start;
     public long window;
+    public boolean benching;
 
-    public PVSearch(Board board, Transposition table, boolean useTTables) {
+    public PVSearch(Board board, Transposition table, boolean useTTables, boolean benchmarking) {
         //Set transposition table that is to be used
         ttable = table;
         //Time management  now global
         window = 1000000000L;
         start = System.nanoTime();
+        benching = benchmarking;
         long end = System.nanoTime();
         //Use either vanilla pvSearch or with transposition tables (basically only for benchmarks)
-        if(useTTables) {
+        if(useTTables  && !benchmarking) {
             for (int distance = 1; distance < Integer.MAX_VALUE && end - start <= window; distance++) {
                 pvSearchTable(board, distance, Integer.MIN_VALUE, Integer.MAX_VALUE, true);
                 end = System.nanoTime();
             }
-        } else {
+        } else if(!benchmarking)  {
             for (int distance = 1; distance < Integer.MAX_VALUE && end - start <= window; distance++) {
                 pvSearch(board, distance, Integer.MIN_VALUE, Integer.MAX_VALUE, true);
                 end = System.nanoTime();
@@ -38,7 +40,7 @@ public class PVSearch {
         int score;
         for (Zug z : node.getMoves()) {
             //time management -  break if we are over the window
-            if (System.nanoTime() - start > window) break;
+            if (System.nanoTime() - start > window && !benching) break;
             if (bestMove == null) bestMove = new Zug(z);
             Board child = new Board(node, z);
             StateCount++;
@@ -69,7 +71,7 @@ public class PVSearch {
         if (depth == 0 || node.getMoves().size() == 0) return node.h();
         int score;
         for (Zug z : node.getMoves()) {
-            if (System.nanoTime() - start > window) break;
+            if (System.nanoTime() - start > window && !benching) break;
             if (bestMove == null) bestMove = new Zug(z);
             Board child = new Board(node, z);
             StateCount++;
