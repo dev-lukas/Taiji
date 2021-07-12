@@ -205,6 +205,22 @@ public class Board {
         return  (m.whiteX * n + m.whiteY) + "," + (m.blackX * n + m.blackY);
     }
 
+    public String toBoardString() {
+        LongLong m = new LongLong(0b1000000000000000000000000000000000000000000000000000000000000000L,0);
+        String board = "";
+        for(int i=0; i < n; i++){
+            for(int k=0; k < n; k++){
+                if (!whites.AND(m).isZero() ) board += "w";
+                else if (!blacks.AND(m).isZero()) board += "b";
+                else board += "-";
+                m = m.RSHIFT(1);
+            }
+            if(i != n-1) {
+                board += "/";
+            }
+        }
+        return board;
+    }
 
     public String toString(){
         LongLong m = new LongLong(0b1000000000000000000000000000000000000000000000000000000000000000L,0);
