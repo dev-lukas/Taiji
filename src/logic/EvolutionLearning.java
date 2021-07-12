@@ -19,16 +19,13 @@ public class EvolutionLearning {
                 if(pv.getBestMove() == null) break;
                 playBoard.doMove(pv.getBestMove());
                 turn = 0;
-                System.out.println("White Move: " + pv.getBestMove().toString());
             } else {
                 subBoard = new Board(playBoard.toBoardString(), "b");
                 pv = new PVSearch(subBoard, ttable_black, true, false);
                 if(pv.getBestMove() == null) break;
                 playBoard.doMove(pv.getBestMove());
                 turn = 1;
-                System.out.println("Black Move: " + pv.getBestMove().toString());
             }
-            System.out.println("Current PlayBoard: " + playBoard.toBoardString());
         }
         int score_white = new Board(playBoard.toBoardString(), "w").h();
         int score_black = new Board(playBoard.toBoardString(), "b").h();
