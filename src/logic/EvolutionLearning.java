@@ -1,6 +1,16 @@
+import java.io.IOException;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.logging.FileHandler;
+import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 
 public class EvolutionLearning {
+
+    private Logger logger;
+
+    public EvolutionLearning(Logger logger) {
+        this.logger = logger;
+    }
 
     /* Train our AI on given Board String */
     public void Learn(String board, int generations) {
@@ -15,7 +25,7 @@ public class EvolutionLearning {
                     ETableData player_1_data = table.getTableData(j);
                     ETableData player_2_data = table.getTableData(j+1);
                     int[] score = Play(board, player_1_data.getParameters(), player_2_data.getParameters());
-                    System.out.println("Player " + j + " played against Player " + (j+1) + " with " + score[0] + " / " + score[1]);
+                    System.out.println("Round " + (i+1) + " | Match " + (j+2)/2 + " with Score " + score[0] + " / " + score[1]);
                     if(score[0] == 0) {
                         table.setTableData(j, new ETableData(
                                 player_1_data.getParameters(),
@@ -57,7 +67,11 @@ public class EvolutionLearning {
             // Time to crossover - then rinse and repeat
             System.out.println("Swiss Tournament finished, results are:");
             System.out.println(table);
+            logger.info("Generation " + g + " finished. Results: \n");
+            logger.info(table.toString());
             CrossOverMutate(table);
+            // Reset Match Stats for fair competition in next round
+            table.resetTableStats();
         }
     }
     /*
@@ -171,7 +185,17 @@ public class EvolutionLearning {
     }
 
     public static void main(String[] args) {
-        EvolutionLearning ev = new EvolutionLearning();
+        Logger loggerr = Logger.getLogger("LearningLog");
+        FileHandler fh;
+        try {
+            fh = new FileHandler("C:\\Users\\lbrot\\Desktop\\KI_Log\\LearningLog.log");
+            loggerr.addHandler(fh);
+            SimpleFormatter formatter = new SimpleFormatter();
+            fh.setFormatter(formatter);
+        } catch (SecurityException | IOException e) {
+            e.printStackTrace();
+        }
+        EvolutionLearning ev = new EvolutionLearning(loggerr);
         ev.Learn("-------/-------/-------/-------/-------/-------/-------", 4);
     }
 }

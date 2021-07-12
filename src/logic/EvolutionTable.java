@@ -46,6 +46,13 @@ public class EvolutionTable {
         etable.set(i, data);
     }
 
+    public void resetTableStats() {
+        for(int i = 0; i < 10; i++) {
+            ETableData data = new ETableData(etable.get(i).getParameters());
+            etable.set(i, data);
+        }
+    }
+
     public String toString() {
         String table = "";
         for(int i = 0; i < 10; i++) {
