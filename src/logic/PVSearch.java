@@ -14,7 +14,7 @@ public class PVSearch {
     public long window;
     public boolean benching;
 
-    public PVSearch(Board board, Transposition table, boolean useTTables, boolean benchmarking) {
+    public PVSearch(Board board, Transposition table, boolean useTTables, boolean benchmarking, Parameters p) {
         //Set transposition table that is to be used
         ttable = table;
         //Time management  now global
@@ -25,7 +25,7 @@ public class PVSearch {
         //Use either vanilla pvSearch or with transposition tables (basically only for benchmarks)
         if(useTTables  && !benchmarking) {
             for (int distance = 1; distance < Integer.MAX_VALUE && end - start <= window; distance++) {
-                pvSearchTable(board, distance, Integer.MIN_VALUE, Integer.MAX_VALUE, true);
+                pvSearchTable(board, distance, Integer.MIN_VALUE, Integer.MAX_VALUE, true, p, null);
                 end = System.nanoTime();
             }
         } else if(!benchmarking)  {
@@ -36,9 +36,9 @@ public class PVSearch {
         }
     }
 
-    public int pvSearchTable(Board node,int depth, int alpha, int beta, boolean isRoot) {
+    public int pvSearchTable(Board node,int depth, int alpha, int beta, boolean isRoot, Parameters p, Zug zug) {
         //anchor
-        if (depth == 0 || node.getMoves().size() == 0) return node.h();
+        if (depth == 0 || node.getMoves().size() == 0) return node.ratingfunction(p, zug);
         int score;
         for (Zug z : node.getMoves()) {
             //time management -  break if we are over the window
@@ -49,11 +49,11 @@ public class PVSearch {
             //Check our table if we have an key for the board already. Also check if the depth of entry is appropriate
             if(!ttable.containsKey(child) || ttable.getTableData(child).getDepth() < depth - 1)  {
                 if(z == node.getMoves().get(0)) {
-                    score = pvSearchTable(child, depth - 1, -beta, -alpha, false);
+                    score = pvSearchTable(child, depth - 1, -beta, -alpha, false, p, z);
                 } else {
-                    score = pvSearchTable(child, depth - 1, -alpha - 1, -alpha, false);
+                    score = pvSearchTable(child, depth - 1, -alpha - 1, -alpha, false, p, z);
                     if (alpha < score && score < beta) {
-                        score = pvSearchTable(child, depth - 1, -beta, -score, false);
+                        score = pvSearchTable(child, depth - 1, -beta, -score, false, p, z);
                     }
                 }
                 //Add entry to database

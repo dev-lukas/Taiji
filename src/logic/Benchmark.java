@@ -41,7 +41,8 @@ public class Benchmark {
     private static String benchmarkPV(String board, int depth, Transposition ttable) {
         Board b = new Board(board, "w");
         long start = System.nanoTime();
-        PVSearch pv = new PVSearch(b, ttable, false,  true);
+        Parameters p = new Parameters(0,0,0,0);
+        PVSearch pv = new PVSearch(b, ttable, false,  true, p);
         pv.pvSearch(b, depth, Integer.MIN_VALUE, Integer.MAX_VALUE,true);
         long elapsedTime = System.nanoTime() - start;
         return "PV Search took " + (elapsedTime * (float) Math.pow(10,-6)) + " ms, looked at " + pv.getStateCount() + " states with the best move being: " + pv.getBestMove();
@@ -50,8 +51,9 @@ public class Benchmark {
     private static String benchmarkPVTable(String board, int depth, Transposition ttable) {
         Board b = new Board(board, "w");
         long start = System.nanoTime();
-        PVSearch pv = new PVSearch(b, ttable, true, true);
-        pv.pvSearchTable(b, depth, Integer.MIN_VALUE, Integer.MAX_VALUE,true);
+        Parameters p = new Parameters(0,0,0,0);
+        PVSearch pv = new PVSearch(b, ttable, true, true, p);
+        pv.pvSearchTable(b, depth, Integer.MIN_VALUE, Integer.MAX_VALUE,true, p, null);
         long elapsedTime = System.nanoTime() - start;
         return "PV Search took " + (elapsedTime * (float) Math.pow(10,-6)) + " ms, looked at " + pv.getStateCount() + " states with the best move being: " + pv.getBestMove() + " with " + ttable.getSize() + " table entries";
     }

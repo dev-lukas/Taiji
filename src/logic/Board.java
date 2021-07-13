@@ -200,6 +200,50 @@ public class Board {
        }
     }
 
+    public int ratingfunction(Parameters p, Zug z){
+        int erg;
+        if (c.equals("w")){
+            erg = evaluation(whites) * 100;
+            for(int i = 0; i< evaluation(whites); i++){
+                erg += i * p.getIncrementPoints();
+            }
+        }else{
+            erg = evaluation(blacks) * 100;
+            for(int i = 0; i< evaluation(blacks); i++){
+                erg += i * p.getIncrementPoints();
+            }
+        }
+        if(z != null) {
+            if (z.blackY == 0 || z.whiteY == 0 || z.blackY == n-1 || z.whiteY == n-1){
+                erg += p.getEdge();
+            }else if (z.blackX == 0 || z.whiteX == 0 || z.blackX == n-1 || z.whiteX == n-1){
+                erg += p.getEdge();
+            }
+            if (z.blackX > 2 && z.blackX < 6 && z.blackY > 2 && z.blackY < 6 || z.whiteX > 2 && z.whiteX < 6 && z.whiteY > 2 && z.whiteY < 6){
+                erg += p.getMiddle();
+            }
+
+            LongLong all = whites.OR(blacks);
+            int white = z.whiteX * 7 + z.whiteY;
+            int black = z.blackX * 7 +z.blackY;
+
+            if (white > 6 && all.toString().charAt(white - 7) == 49 ||  black > 6 && all.toString().charAt(black - 7) == 49){
+                erg += p.getOnAnother();
+            }
+            else if (white < 43 && all.toString().charAt(white + 7) == 49 || black < 43 && all.toString().charAt(black + 7) == 49 ){
+                erg += p.getOnAnother();
+            }
+            else if (white >= 1 && (white+1) % 7 != 0 && all.toString().charAt(white - 1) == 49 || black >= 1 && (black +1) % 7!= 0  && all.toString().charAt(black - 1) == 49){
+                erg += p.getOnAnother();
+            }
+            else if (white % 7 != 0  && all.toString().charAt(white + 1) == 49 || black % 7 != 0 && all.toString().charAt(black + 1) == 49 ){
+                erg += p.getOnAnother();
+            }
+        }
+
+        return erg;
+    }
+
     // from Zug to String "x,y"
     public String parseMove(Zug m){
         return  (m.whiteX * n + m.whiteY) + "," + (m.blackX * n + m.blackY);

@@ -155,20 +155,20 @@ public class EvolutionLearning {
         while(true) {
             if(player_1_turn == 0) {
                 subBoard = new Board(playBoard.toBoardString(), "w");
-                pv = new PVSearch(subBoard, ttable_white, true, false);
+                pv = new PVSearch(subBoard, ttable_white, true, false, player_1);
                 if(pv.getBestMove() == null) break;
                 playBoard.doMove(pv.getBestMove());
                 subBoard = new Board(playBoard.toBoardString(), "b");
-                pv = new PVSearch(subBoard, ttable_black, true, false);
+                pv = new PVSearch(subBoard, ttable_black, true, false, player_2);
                 if(pv.getBestMove() == null) break;
                 playBoard.doMove(pv.getBestMove());
             } else {
                 subBoard = new Board(playBoard.toBoardString(), "w");
-                pv = new PVSearch(subBoard, ttable_white, true, false);
+                pv = new PVSearch(subBoard, ttable_white, true, false, player_2);
                 if(pv.getBestMove() == null) break;
                 playBoard.doMove(pv.getBestMove());
                 subBoard = new Board(playBoard.toBoardString(), "b");
-                pv = new PVSearch(subBoard, ttable_black, true, false);
+                pv = new PVSearch(subBoard, ttable_black, true, false, player_1);
                 if(pv.getBestMove() == null) break;
                 playBoard.doMove(pv.getBestMove());
             }
@@ -196,6 +196,6 @@ public class EvolutionLearning {
             e.printStackTrace();
         }
         EvolutionLearning ev = new EvolutionLearning(loggerr);
-        ev.Learn("-------/-------/-------/-------/-------/-------/-------", 4);
+        ev.Learn("-------/-------/-------/-------/-------/-------/-------", 100);
     }
 }
