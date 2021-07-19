@@ -6,16 +6,17 @@ import static java.lang.Math.min;
 public class AlphaBeta {
     private Zug bestMove;
     private int StateCount = 0;
+    public long start;
+    public long window;
 
     // mit iterative tiefensuche
     public AlphaBeta(Board board/*, int timeLeft*/, boolean cutoffs){
 
         // test: give max 4 sec per turn
-        long start = System.nanoTime();
+        start = System.nanoTime();
         long end = System.nanoTime();
         // 4 seconds in nanoseconds
-        
-        long window = 100000000L;
+        window = 1000000000L;
 
         if (cutoffs) {
             for (int distance = 1; distance < Integer.MAX_VALUE && end - start <= window; distance++) {
@@ -66,6 +67,7 @@ public class AlphaBeta {
         if (maximizingPlayer) {
             int value = Integer.MIN_VALUE;
             for (Zug z : node.getMoves()){
+                if (System.nanoTime() - start > window) break;
                 if (bestMove == null) bestMove = new Zug(z);
                 // create child board, apply move z and remove it from the move list
                 Board child = new Board(node,z);

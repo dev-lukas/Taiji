@@ -1,5 +1,7 @@
 public class Parameters {
-
+    /*
+        Parameter Class containing our four chosen evaluation parameters
+     */
     public int edge; //Set Stone on an edge
     public int middle; //Set Stone middle
     public int incrementPoints; //Point increment per extra connected field

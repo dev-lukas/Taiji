@@ -22,7 +22,7 @@ public class PVSearch {
         start = System.nanoTime();
         benching = benchmarking;
         long end = System.nanoTime();
-        //Use either vanilla pvSearch or with transposition tables (basically only for benchmarks)
+        //Use either vanilla pvSearch or with transposition tables
         if(useTTables  && !benchmarking) {
             for (int distance = 1; distance < Integer.MAX_VALUE && end - start <= window; distance++) {
                 pvSearchTable(board, distance, Integer.MIN_VALUE, Integer.MAX_VALUE, true, p, null);

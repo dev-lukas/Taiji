@@ -1,5 +1,7 @@
 public class ETableData {
-
+    /*
+        ETableData is a Data wrapper to store the Parameters and match informations in the Evolution Table
+     */
     public Parameters parameters;
     public int games_won;
     public int games_played;

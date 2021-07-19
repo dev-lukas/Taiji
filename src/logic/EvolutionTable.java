@@ -2,6 +2,11 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.concurrent.ThreadLocalRandom;
 
+/*
+    EvolutionTable contains an ArrayList that holds our 10 different contestants while learning
+    Each contestant has his own parameters and game statistics
+ */
+
 public class EvolutionTable {
     public static ArrayList<ETableData> etable;
     /*
@@ -26,6 +31,7 @@ public class EvolutionTable {
         return etable.get(i);
     }
 
+    //Bubble Sort going after games won, then avg point difference
     public void sortBest() {
         for(int i = 0; i < 9; i++) {
             for(int j = 0; j < 9 - i; j++) {

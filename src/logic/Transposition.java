@@ -37,7 +37,7 @@ public class Transposition {
     }
 
     /*
-        Hashfunction for unique hashes for our board...seems to work? kinda
+        Hashfunction for unique hashes for our board
      */
     public long uniqueHashCode(Board node) {
         long hash = 17;

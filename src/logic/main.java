@@ -28,7 +28,7 @@ public class main {
             // this constructor loads a board and possible moves directly
             Board board = new Board(currentBoard, yourColour);
             // execute pvSearch, the chosen move is in ab.getBestMove()
-            Parameters p = new Parameters(0,0,0,0);
+            Parameters p = new Parameters(-40, 69, 69, 0);
             PVSearch pv = new PVSearch(board, ttable, true, false, p);
             // parse it to String
             String move = board.parseMove(pv.getBestMove());
